@@ -1,0 +1,11 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#111827"><title>Memo</title><link rel="manifest" href="manifest.webmanifest"><link rel="stylesheet" href="style.css"></head><body>
+<header><div><h1>Memo</h1><p>Flashcards manuelles, locales et gratuites.</p></div><button id="theme" class="soft">◐</button></header>
+<main>
+<section id="home" class="view on"><div class="bar"><input id="search" placeholder="Rechercher…"><button id="newSubject">+ Matière</button></div><div id="subjects" class="grid"></div><div id="emptyHome" class="empty">Crée ta première matière.</div></section>
+<section id="subject" class="view"><button id="backHome" class="soft">← Accueil</button><div class="title"><div><h2 id="subjectName"></h2><p id="subjectInfo"></p></div><button id="newDeck">+ Chapitre</button></div><div id="decks" class="grid"></div></section>
+<section id="deck" class="view"><button id="backSubject" class="soft">← Matière</button><div class="title"><div><h2 id="deckName"></h2><p id="deckInfo"></p></div><div><button id="study">Réviser</button> <button id="newCard">+ Carte</button></div></div><div id="cards"></div><div id="emptyDeck" class="empty">Ajoute ta première carte.</div></section>
+<section id="review" class="view"><button id="quit" class="soft">← Quitter</button><div class="progress"><span id="progress"></span><span id="score"></span></div><div id="flash" class="flash"><small id="side"></small><div id="text"></div><em>Toucher pour retourner</em></div><div id="ratings" class="ratings hide"><button data-rate="again">À revoir</button><button data-rate="hard">Difficile</button><button data-rate="known">Acquis ✓</button></div></section>
+</main>
+<footer><button id="export" class="soft">Exporter</button><label class="soft">Importer<input id="import" type="file" accept=".json"></label><span>Données stockées sur cet appareil.</span></footer>
+<dialog id="dlg"><form id="form"><h3 id="dlgTitle"></h3><div id="fields"></div><div class="dialogButtons"><button type="button" id="cancel" class="soft">Annuler</button><button>Enregistrer</button></div></form></dialog>
+<script src="app.js"></script></body></html>
