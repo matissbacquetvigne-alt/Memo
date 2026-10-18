@@ -18,8 +18,10 @@ window.addEventListener('online',()=>{const d=typeof D==='function'?D():null;if(
 (()=>{
 const style=document.createElement('style');style.id='memo-sheet-polish';style.textContent=`
 .revisionSheetView{position:relative;max-width:1180px;margin:0 auto;padding-bottom:48px}
-.revisionSheetView .sheetTop{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:24px;margin:0 0 28px;padding:0 2px 20px;border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent;box-shadow:none;overflow:visible}
-.revisionSheetView .sheetTop:before,.revisionSheetView .sheetTop:after{display:none}
+.revisionSheetView .sheetTop{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:24px;margin:0 0 28px;padding:0 2px 20px;border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent;box-shadow:none;overflow:visible}
+.revisionSheetView .sheetTop:before{display:none}
+.revisionSheetView .sheetTop:after{display:none}
+.revisionSheetView.sheet-has-file .sheetTop:after{content:'✓\A IMPORTÉ';white-space:pre;display:flex;flex-direction:column;align-items:center;justify-content:center;position:absolute;right:255px;bottom:20px;width:50px;height:50px;box-sizing:border-box;border:1px solid var(--accent);border-radius:9px;background:var(--accent-soft);color:var(--accent);font-size:8px;font-weight:800;line-height:1.35;letter-spacing:.04em;text-align:center}
 .revisionSheetView #sheetBack{margin:0 0 25px;padding-left:0;border:0;background:transparent;box-shadow:none;color:var(--muted);font-weight:700}
 .revisionSheetView #sheetBack:hover{color:var(--accent);transform:translateX(-2px)}
 .revisionSheetView .sheetTop .eyebrow{display:block;width:auto;padding:0;border-radius:0;background:transparent;color:var(--accent);font-size:9px;font-weight:800;letter-spacing:.15em}
@@ -44,7 +46,9 @@ const style=document.createElement('style');style.id='memo-sheet-polish';style.t
 .revisionSheetView .sheetBigImport{position:relative;width:46px;height:46px;min-height:46px;margin:0;padding:0;border:1px solid var(--accent);border-radius:10px;background:var(--accent);color:transparent;font-size:0;box-shadow:none;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .revisionSheetView .sheetBigImport:before{content:'+';color:#fff;font-size:24px;font-weight:500;line-height:1}
 .revisionSheetView .sheetBigImport:hover{transform:translateY(-1px)}
-@media(max-width:900px){.revisionSheetView .sheetEmpty{right:220px}}
-@media(max-width:700px){.revisionSheetView .sheetTop{grid-template-columns:1fr;align-items:stretch;gap:16px;padding:0 0 18px;margin-bottom:20px}.revisionSheetView #sheetBack{margin-bottom:20px}.revisionSheetView .sheetTop h2{font-size:31px}.revisionSheetView .sheetActions{display:grid;grid-template-columns:1fr auto;justify-content:stretch}.revisionSheetView .sheetImport{width:100%;box-sizing:border-box}.revisionSheetView .sheetViewer{border-radius:10px}.revisionSheetView .sheetImageWrap{padding:6px}.revisionSheetView .sheetEmpty{position:static;width:44px;height:44px;margin:-4px 0 14px auto}.revisionSheetView .sheetBigImport{width:44px;height:44px;min-height:44px}.revisionSheetView:has(.sheetEmpty:not([hidden])) .sheetActions .sheetImport{display:none}}
+@media(max-width:900px){.revisionSheetView .sheetEmpty{right:220px}.revisionSheetView.sheet-has-file .sheetTop:after{right:205px}}
+@media(max-width:700px){.revisionSheetView .sheetTop{grid-template-columns:1fr;align-items:stretch;gap:16px;padding:0 0 18px;margin-bottom:20px}.revisionSheetView #sheetBack{margin-bottom:20px}.revisionSheetView .sheetTop h2{font-size:31px}.revisionSheetView .sheetActions{display:grid;grid-template-columns:1fr auto;justify-content:stretch}.revisionSheetView .sheetImport{width:100%;box-sizing:border-box}.revisionSheetView .sheetViewer{border-radius:10px}.revisionSheetView .sheetImageWrap{padding:6px}.revisionSheetView .sheetEmpty{position:static;width:44px;height:44px;margin:-4px 0 14px auto}.revisionSheetView .sheetBigImport{width:44px;height:44px;min-height:44px}.revisionSheetView:has(.sheetEmpty:not([hidden])) .sheetActions .sheetImport{display:none}.revisionSheetView.sheet-has-file .sheetTop:after{position:static;grid-row:2;grid-column:1;width:46px;height:46px;margin-left:auto;margin-bottom:-62px}}
 `;document.head.appendChild(style);
+const view=document.querySelector('.revisionSheetView'),viewer=document.getElementById('sheetViewer');
+if(view&&viewer){const sync=()=>view.classList.toggle('sheet-has-file',!viewer.hidden);sync();new MutationObserver(sync).observe(viewer,{attributes:true,attributeFilter:['hidden']})}
 })();
