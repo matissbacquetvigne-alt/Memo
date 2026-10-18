@@ -37,13 +37,14 @@ const style=document.createElement('style');style.id='memo-sheet-polish';style.t
 .revisionSheetView .sheetViewer:after{content:'Agrandir';position:absolute;right:12px;bottom:12px;z-index:4;padding:6px 9px;border:1px solid rgba(255,255,255,.3);border-radius:8px;background:rgba(25,24,38,.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:white;font-size:9px;font-weight:700;pointer-events:none}
 .revisionSheetView .sheetImageWrap{padding:10px;max-height:78vh}
 .revisionSheetView .sheetImageWrap img{border-radius:6px;box-shadow:none}
-.revisionSheetView .sheetEmpty{min-height:300px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:11px;padding:38px 24px;border:1px dashed var(--line);border-radius:12px;background:transparent;box-shadow:none}
-.revisionSheetView .sheetEmptyIcon{width:48px;height:59px;border:1.5px solid var(--accent);border-radius:8px;background:var(--accent-soft);box-shadow:none;transform:none}
-.revisionSheetView .sheetEmptyIcon:after{border-left-width:11px;border-bottom-width:11px}
-.revisionSheetView .sheetEmptyIcon i{left:10px;right:10px;height:2px}.revisionSheetView .sheetEmptyIcon i:nth-of-type(1){top:21px}.revisionSheetView .sheetEmptyIcon i:nth-of-type(2){top:31px}.revisionSheetView .sheetEmptyIcon i:nth-of-type(3){top:41px}
-.revisionSheetView .sheetEmptyText h3{font-size:18px;margin:3px 0 5px;letter-spacing:-.015em}.revisionSheetView .sheetEmptyText p{max-width:470px;font-size:11px;line-height:1.55;margin:auto}
-.revisionSheetView .sheetBigImport{grid-column:auto;min-height:40px;margin-top:5px;padding:0 15px;border-radius:10px;box-shadow:none}
-.revisionSheetView .sheetEmpty small{grid-column:auto;margin:0;color:var(--muted);background:transparent;padding:0;font-size:9px;font-weight:700;letter-spacing:.05em}
-@media(max-width:700px){.revisionSheetView .sheetTop{grid-template-columns:1fr;align-items:stretch;gap:16px;padding:0 0 18px;margin-bottom:20px}.revisionSheetView #sheetBack{margin-bottom:20px}.revisionSheetView .sheetTop h2{font-size:31px}.revisionSheetView .sheetActions{display:grid;grid-template-columns:1fr auto;justify-content:stretch}.revisionSheetView .sheetImport{width:100%;box-sizing:border-box}.revisionSheetView .sheetViewer{border-radius:10px}.revisionSheetView .sheetImageWrap{padding:6px}.revisionSheetView .sheetEmpty{min-height:285px;padding:32px 18px}.revisionSheetView .sheetBigImport{width:min(100%,300px)}}
+.revisionSheetView .sheetEmpty{width:190px;min-height:150px;box-sizing:border-box;margin:0 0 22px auto;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:8px;padding:16px;border:1px dashed var(--line);border-radius:11px;background:transparent;box-shadow:none}
+.revisionSheetView .sheetEmpty[hidden]{display:none!important}
+.revisionSheetView .sheetEmptyIcon{width:34px;height:41px;border:1.5px solid var(--accent);border-radius:6px;background:var(--accent-soft);box-shadow:none;transform:none}
+.revisionSheetView .sheetEmptyIcon:after{border-left-width:8px;border-bottom-width:8px}
+.revisionSheetView .sheetEmptyIcon i{left:7px;right:7px;height:1.5px}.revisionSheetView .sheetEmptyIcon i:nth-of-type(1){top:14px}.revisionSheetView .sheetEmptyIcon i:nth-of-type(2){top:21px}.revisionSheetView .sheetEmptyIcon i:nth-of-type(3){top:28px}
+.revisionSheetView .sheetEmptyText h3{font-size:13px;margin:1px 0;letter-spacing:-.01em}.revisionSheetView .sheetEmptyText p{display:none}
+.revisionSheetView .sheetBigImport{grid-column:auto;min-height:34px;margin-top:2px;padding:0 11px;border-radius:8px;box-shadow:none;font-size:10px}
+.revisionSheetView .sheetEmpty small{display:none}
+@media(max-width:700px){.revisionSheetView .sheetTop{grid-template-columns:1fr;align-items:stretch;gap:16px;padding:0 0 18px;margin-bottom:20px}.revisionSheetView #sheetBack{margin-bottom:20px}.revisionSheetView .sheetTop h2{font-size:31px}.revisionSheetView .sheetActions{display:grid;grid-template-columns:1fr auto;justify-content:stretch}.revisionSheetView .sheetImport{width:100%;box-sizing:border-box}.revisionSheetView .sheetViewer{border-radius:10px}.revisionSheetView .sheetImageWrap{padding:6px}.revisionSheetView .sheetEmpty{width:160px;min-height:135px;margin-left:auto;padding:13px}.revisionSheetView .sheetBigImport{width:auto}}
 `;document.head.appendChild(style);
 })();
