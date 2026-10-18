@@ -37,16 +37,14 @@ const style=document.createElement('style');style.id='memo-sheet-polish';style.t
 .revisionSheetView .sheetViewer:after{content:'Agrandir';position:absolute;right:12px;bottom:12px;z-index:4;padding:6px 9px;border:1px solid rgba(255,255,255,.3);border-radius:8px;background:rgba(25,24,38,.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:white;font-size:9px;font-weight:700;pointer-events:none}
 .revisionSheetView .sheetImageWrap{padding:10px;max-height:78vh}
 .revisionSheetView .sheetImageWrap img{border-radius:6px;box-shadow:none}
-.revisionSheetView .sheetEmpty{position:absolute;z-index:3;top:104px;right:265px;width:185px;height:68px;min-height:0;box-sizing:border-box;margin:0;display:flex;flex-direction:row;justify-content:center;align-items:center;text-align:left;gap:9px;padding:9px 10px;border:1px dashed var(--line);border-radius:10px;background:var(--panel);box-shadow:none}
+.revisionSheetView .sheetEmpty{position:absolute;z-index:3;top:118px;right:270px;width:46px;height:46px;min-height:0;box-sizing:border-box;margin:0;padding:0;border:0;background:transparent;box-shadow:none;display:block}
 .revisionSheetView .sheetEmpty[hidden]{display:none!important}
 .revisionSheetView:has(.sheetEmpty:not([hidden])) .sheetActions .sheetImport{display:none}
-.revisionSheetView .sheetEmptyIcon{flex:0 0 auto;width:27px;height:33px;border:1.5px solid var(--accent);border-radius:5px;background:var(--accent-soft);box-shadow:none;transform:none}
-.revisionSheetView .sheetEmptyIcon:after{border-left-width:7px;border-bottom-width:7px}
-.revisionSheetView .sheetEmptyIcon i{left:6px;right:6px;height:1px}.revisionSheetView .sheetEmptyIcon i:nth-of-type(1){top:11px}.revisionSheetView .sheetEmptyIcon i:nth-of-type(2){top:17px}.revisionSheetView .sheetEmptyIcon i:nth-of-type(3){top:23px}
-.revisionSheetView .sheetEmptyText{display:none}
-.revisionSheetView .sheetBigImport{grid-column:auto;min-height:32px;margin:0;padding:0 9px;border-radius:7px;box-shadow:none;font-size:9px;white-space:nowrap}
-.revisionSheetView .sheetEmpty small{display:none}
-@media(max-width:900px){.revisionSheetView .sheetEmpty{right:210px;width:170px}}
-@media(max-width:700px){.revisionSheetView .sheetTop{grid-template-columns:1fr;align-items:stretch;gap:16px;padding:0 0 18px;margin-bottom:20px}.revisionSheetView #sheetBack{margin-bottom:20px}.revisionSheetView .sheetTop h2{font-size:31px}.revisionSheetView .sheetActions{display:grid;grid-template-columns:1fr auto;justify-content:stretch}.revisionSheetView .sheetImport{width:100%;box-sizing:border-box}.revisionSheetView .sheetViewer{border-radius:10px}.revisionSheetView .sheetImageWrap{padding:6px}.revisionSheetView .sheetEmpty{position:static;width:170px;height:64px;margin:-6px 0 16px auto;padding:8px}.revisionSheetView .sheetBigImport{width:auto}.revisionSheetView:has(.sheetEmpty:not([hidden])) .sheetActions .sheetImport{display:none}}
+.revisionSheetView .sheetEmptyIcon,.revisionSheetView .sheetEmptyText,.revisionSheetView .sheetEmpty small{display:none}
+.revisionSheetView .sheetBigImport{position:relative;width:46px;height:46px;min-height:46px;margin:0;padding:0;border:1px solid var(--accent);border-radius:10px;background:var(--accent);color:transparent;font-size:0;box-shadow:none;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.revisionSheetView .sheetBigImport:before{content:'+';color:#fff;font-size:24px;font-weight:500;line-height:1}
+.revisionSheetView .sheetBigImport:hover{transform:translateY(-1px)}
+@media(max-width:900px){.revisionSheetView .sheetEmpty{right:220px}}
+@media(max-width:700px){.revisionSheetView .sheetTop{grid-template-columns:1fr;align-items:stretch;gap:16px;padding:0 0 18px;margin-bottom:20px}.revisionSheetView #sheetBack{margin-bottom:20px}.revisionSheetView .sheetTop h2{font-size:31px}.revisionSheetView .sheetActions{display:grid;grid-template-columns:1fr auto;justify-content:stretch}.revisionSheetView .sheetImport{width:100%;box-sizing:border-box}.revisionSheetView .sheetViewer{border-radius:10px}.revisionSheetView .sheetImageWrap{padding:6px}.revisionSheetView .sheetEmpty{position:static;width:44px;height:44px;margin:-4px 0 14px auto}.revisionSheetView .sheetBigImport{width:44px;height:44px;min-height:44px}.revisionSheetView:has(.sheetEmpty:not([hidden])) .sheetActions .sheetImport{display:none}}
 `;document.head.appendChild(style);
 })();
