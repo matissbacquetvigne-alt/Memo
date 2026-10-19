@@ -19,4 +19,4 @@ dialog::backdrop{animation:memoBackdropIn 200ms ease both}
 @keyframes memoZoomIn{from{opacity:0;transform:scale(.965)}to{opacity:1;transform:none}}
 @keyframes memoSelect{from{transform:scale(.97)}to{transform:scale(1)}}
 @media(prefers-reduced-motion:reduce){.view.on,.view.on>*,dialog[open],dialog::backdrop,.memoNotesPanel:not([hidden]),.sheetZoom:not([hidden]),.sheetZoom:not([hidden]) .sheetZoomContent,.courseModeTabs button.on,.sheetTab.on{animation:none!important}.tile,.chapterTool,button,.soft,.primary,input,textarea,.sheetTab,.courseModeTabs button{transition:none!important}}
-`;document.head.appendChild(s)})();
+`;document.head.appendChild(s);if(!document.querySelector('script[data-memo-owl]')){const o=document.createElement('script');o.src='memo-owl.js';o.dataset.memoOwl='1';document.head.appendChild(o)}})();
