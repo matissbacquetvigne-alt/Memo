@@ -14,61 +14,96 @@
     "Encore un peu, ça travaille bien !"
   ];
 
-  // Même identité que le hibou de l'accueil : palette, yeux et visage Memo.
-  // Le dessin, la silhouette et les accessoires changent selon le contexte.
-  // IMPORTANT : toutes les classes internes sont propres à ce hibou pour ne jamais modifier celui de l'accueil.
+  /*
+    Hibou contextuel Memo.
+    Même famille de couleurs que le hibou d'accueil, mais dessin indépendant :
+    silhouette continue, grosses expressions, vraies pattes et ailes organiques.
+    Aucune classe du hibou d'accueil n'est réutilisée.
+  */
   const owl=(pose='')=>`<div class="memoContextOwl ${pose}" role="img" aria-label="Hibou Memo">
-    <i class="memoCtxEar l"></i><i class="memoCtxEar r"></i>
-    <div class="memoCtxBody"></div><div class="memoCtxBelly"></div>
-    <div class="memoCtxHead"><i class="memoCtxEye l"></i><i class="memoCtxEye r"></i><i class="memoCtxBeak"></i></div>
-    <i class="memoCtxWing l"></i><i class="memoCtxWing r"></i>
-    <i class="memoCtxFoot l"></i><i class="memoCtxFoot r"></i>
+    <svg class="memoCtxSvg" viewBox="0 0 190 210" aria-hidden="true">
+      <ellipse class="memoCtxShadow" cx="92" cy="197" rx="61" ry="9"/>
+      <g class="memoCtxCharacter">
+        <path class="memoCtxBack" d="M50 52 C39 41 36 24 45 10 C56 14 64 22 69 31 C84 25 104 25 119 31 C125 20 134 13 146 11 C152 26 149 40 139 51 C153 66 158 87 154 108 C151 126 145 148 134 164 C123 180 110 190 92 190 C72 190 56 180 46 163 C36 146 31 124 30 105 C29 84 35 65 50 52 Z"/>
+        <path class="memoCtxBelly" d="M61 111 C66 101 78 96 92 96 C107 96 119 102 124 113 C129 126 128 151 120 167 C114 180 105 185 92 185 C79 185 69 179 63 167 C55 151 55 126 61 111 Z"/>
+
+        <g class="memoCtxFace">
+          <path class="memoCtxBrow" d="M48 50 C58 35 75 30 92 37 C109 29 128 35 139 50 C143 58 143 69 139 78 C133 92 117 101 92 102 C67 101 51 92 45 78 C41 68 42 58 48 50 Z"/>
+          <circle class="memoCtxEyeCream l" cx="69" cy="66" r="27"/>
+          <circle class="memoCtxEyeCream r" cx="116" cy="66" r="27"/>
+          <circle class="memoCtxIris l" cx="70" cy="68" r="14"/>
+          <circle class="memoCtxIris r" cx="117" cy="68" r="14"/>
+          <circle class="memoCtxPupil l" cx="70" cy="68" r="8"/>
+          <circle class="memoCtxPupil r" cx="117" cy="68" r="8"/>
+          <circle class="memoCtxGlint l" cx="65" cy="62" r="4"/>
+          <circle class="memoCtxGlint r" cx="112" cy="62" r="4"/>
+          <path class="memoCtxBeak" d="M82 87 Q92 78 102 87 L92 99 Z"/>
+          <path class="memoCtxSmile" d="M85 98 Q92 107 100 98 Q98 112 92 113 Q86 111 85 98 Z"/>
+        </g>
+
+        <g class="memoCtxWingLeft">
+          <path d="M43 105 C26 111 18 128 20 145 C22 160 33 168 45 161 C55 155 61 143 62 128 C62 116 55 108 43 105 Z"/>
+          <path class="memoCtxFeatherLine" d="M29 145 Q42 150 53 139"/>
+        </g>
+        <g class="memoCtxWingRight">
+          <path d="M139 106 C151 98 160 87 164 72 C169 78 169 89 166 99 C175 93 181 84 184 75 C189 89 182 104 172 114 C181 112 187 108 190 104 C189 119 177 130 160 135 C151 138 143 132 137 124 C132 117 133 111 139 106 Z"/>
+          <path class="memoCtxFeatherLine" d="M151 118 Q163 116 174 105"/>
+        </g>
+
+        <g class="memoCtxFeet">
+          <path class="memoCtxLeg l" d="M74 179 L72 193"/>
+          <path class="memoCtxLeg r" d="M109 179 L111 193"/>
+          <path class="memoCtxFoot l" d="M72 191 Q61 191 57 198 Q68 195 75 198 Q80 194 84 198"/>
+          <path class="memoCtxFoot r" d="M111 191 Q101 191 97 198 Q108 195 114 198 Q120 194 125 198"/>
+        </g>
+      </g>
+    </svg>
     <span class="memoCtxTimerBadge"><i></i></span>
   </div>`;
 
   if(!document.getElementById('memoOwlStyle')){
     const style=document.createElement('style');style.id='memoOwlStyle';
     style.textContent=`
-      /* Identité Memo : palette chaude du hibou d'accueil, sans toucher à son dessin. */
-      .memoContextOwl{position:relative;width:132px;height:145px;isolation:isolate}
-      .memoCtxBody{position:absolute;z-index:1;left:22px;bottom:13px;width:88px;height:96px;border-radius:46% 46% 43% 43%/42% 42% 58% 58%;background:linear-gradient(145deg,#b07850,#774932);transition:transform .35s ease}
-      .memoCtxBelly{position:absolute;z-index:2;left:39px;bottom:18px;width:54px;height:65px;border-radius:50% 50% 46% 46%;background:#f4ddbf;transition:transform .35s ease}
-      .memoCtxHead{position:absolute;z-index:5;left:12px;top:13px;width:108px;height:76px;border-radius:48% 48% 43% 43%;background:#bd8157;transition:transform .35s ease;transform-origin:54px 60px}
-      .memoCtxEar{position:absolute;z-index:3;top:5px;width:29px;height:35px;background:#9b603f;border-radius:8px 75% 8px 70%}
-      .memoCtxEar.l{left:20px;transform:rotate(31deg)}.memoCtxEar.r{right:20px;transform:scaleX(-1) rotate(31deg)}
-      .memoCtxEye{position:absolute;top:13px;width:43px;height:43px;border-radius:50%;background:#fff6e9;border:4px solid #e6c39c;box-sizing:border-box}
-      .memoCtxEye.l{left:8px}.memoCtxEye.r{right:8px}
-      .memoCtxEye:before{content:"";position:absolute;width:22px;height:22px;border-radius:50%;background:#4c2b1e;left:7px;top:7px;box-shadow:inset 0 0 0 5px #8b4d25;transition:transform .3s ease}
-      .memoCtxEye:after{content:"";position:absolute;width:6px;height:6px;border-radius:50%;background:white;left:13px;top:10px}
-      .memoCtxBeak{position:absolute;z-index:7;left:47px;top:50px;border-left:7px solid transparent;border-right:7px solid transparent;border-top:14px solid #efa03e}
-      .memoCtxWing{position:absolute;z-index:4;top:75px;width:34px;height:58px;background:#895538;border-radius:75% 28% 72% 34%;transition:transform .38s ease,top .38s ease,left .38s ease,right .38s ease}
-      .memoCtxWing.l{left:10px;transform:rotate(16deg);transform-origin:25px 8px}.memoCtxWing.r{right:10px;transform:scaleX(-1) rotate(16deg);transform-origin:9px 8px}
-      .memoCtxFoot{position:absolute;z-index:0;bottom:7px;width:25px;height:8px;border-radius:50%;border-bottom:4px solid #efa03e}
-      .memoCtxFoot.l{left:34px;transform:rotate(-5deg)}.memoCtxFoot.r{right:34px;transform:rotate(5deg)}
-      .memoCtxTimerBadge{display:none;position:absolute;z-index:8;right:4px;bottom:17px;width:30px;height:30px;border-radius:50%;box-sizing:border-box;background:#fff9e9;border:3px solid #6559a9;box-shadow:0 3px 0 rgba(92,81,155,.18)}
-      .memoCtxTimerBadge:before{content:"";position:absolute;left:9px;top:-7px;width:7px;height:6px;border-radius:3px 3px 0 0;background:#6559a9}.memoCtxTimerBadge:after{content:"";position:absolute;left:12px;top:5px;width:2px;height:9px;border-radius:2px;background:#6559a9;transform-origin:bottom;transform:rotate(-35deg)}.memoCtxTimerBadge i{position:absolute;left:12px;top:12px;width:7px;height:2px;border-radius:2px;background:#6559a9}
+      .memoContextOwl{position:relative;width:190px;height:210px;isolation:isolate;--memo-brown:#b07850;--memo-dark:#774932;--memo-face:#bd8157;--memo-mid:#895538;--memo-cream:#f4ddbf;--memo-eye:#fff6e9;--memo-eye-ring:#e6c39c;--memo-iris:#8b4d25;--memo-pupil:#4c2b1e;--memo-orange:#efa03e}
+      .memoCtxSvg{display:block;width:100%;height:100%;overflow:visible}
+      .memoCtxShadow{fill:rgba(60,38,28,.15)}
+      .memoCtxCharacter{transform-origin:92px 188px;transition:transform .38s ease}
+      .memoCtxBack{fill:var(--memo-brown)}
+      .memoCtxBelly{fill:var(--memo-cream)}
+      .memoCtxBrow{fill:var(--memo-face)}
+      .memoCtxEyeCream{fill:var(--memo-eye);stroke:var(--memo-eye-ring);stroke-width:5}
+      .memoCtxIris{fill:var(--memo-iris)}.memoCtxPupil{fill:var(--memo-pupil)}.memoCtxGlint{fill:#fff}
+      .memoCtxBeak{fill:var(--memo-orange)}.memoCtxSmile{fill:#d96e52}
+      .memoCtxWingLeft,.memoCtxWingRight{fill:var(--memo-mid);transform-box:fill-box;transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+      .memoCtxWingLeft{transform-origin:85% 20%}.memoCtxWingRight{transform-origin:10% 75%}
+      .memoCtxFeatherLine{fill:none;stroke:#774932;stroke-width:3;stroke-linecap:round;opacity:.35}
+      .memoCtxLeg{fill:none;stroke:var(--memo-orange);stroke-width:6;stroke-linecap:round}.memoCtxFoot{fill:none;stroke:var(--memo-orange);stroke-width:6;stroke-linecap:round;stroke-linejoin:round}
+      .memoCtxFace{transform-box:fill-box;transform-origin:center;transition:transform .35s ease}.memoCtxIris,.memoCtxPupil,.memoCtxGlint{transition:transform .3s ease}
+      .memoCtxTimerBadge{display:none;position:absolute;z-index:8;right:13px;bottom:21px;width:36px;height:36px;border-radius:50%;box-sizing:border-box;background:#fff9e9;border:3px solid #6559a9;box-shadow:0 4px 0 rgba(92,81,155,.18)}
+      .memoCtxTimerBadge:before{content:"";position:absolute;left:11px;top:-8px;width:8px;height:7px;border-radius:4px 4px 0 0;background:#6559a9}.memoCtxTimerBadge:after{content:"";position:absolute;left:15px;top:7px;width:2px;height:10px;border-radius:2px;background:#6559a9;transform-origin:bottom;transform:rotate(-35deg)}.memoCtxTimerBadge i{position:absolute;left:15px;top:16px;width:8px;height:2px;border-radius:2px;background:#6559a9}
 
-      /* Chapitres : hibou debout, sans livre, qui présente les choix. */
-      .memoContextOwl.pose-chapter{transform:rotate(-2deg)}
-      .memoContextOwl.pose-chapter .memoCtxHead{transform:rotate(5deg) translate(2px,0)}
-      .memoContextOwl.pose-chapter .memoCtxEye:before{transform:translate(2px,1px)}
-      .memoContextOwl.pose-chapter .memoCtxWing.l{top:83px;left:8px;transform:rotate(24deg)}
-      .memoContextOwl.pose-chapter .memoCtxWing.r{top:55px;right:-18px;transform:scaleX(-1) rotate(-78deg)}
-      .memoContextOwl.pose-chapter .memoCtxBody{transform:rotate(1deg)}
+      /* Chapitres : le grand hibou expressif de la maquette, sans livre. */
+      .memoContextOwl.pose-chapter .memoCtxCharacter{transform:rotate(-2deg)}
+      .memoContextOwl.pose-chapter .memoCtxFace{transform:rotate(4deg) translate(3px,-1px)}
+      .memoContextOwl.pose-chapter .memoCtxIris,.memoContextOwl.pose-chapter .memoCtxPupil,.memoContextOwl.pose-chapter .memoCtxGlint{transform:translate(2px,1px)}
+      .memoContextOwl.pose-chapter .memoCtxWingRight{transform:rotate(-4deg) translate(2px,-3px)}
 
-      /* Chrono : silhouette plus vive + petit chronomètre, jamais de livre. */
+      /* Chrono : même personnage, plus compact, avec son petit chrono. */
       .memoContextOwl.pose-ready .memoCtxTimerBadge,.memoContextOwl.pose-running .memoCtxTimerBadge,.memoContextOwl.pose-pause .memoCtxTimerBadge,.memoContextOwl.pose-finished .memoCtxTimerBadge{display:block}
-      .memoContextOwl.pose-ready .memoCtxHead{transform:rotate(-3deg)}.memoContextOwl.pose-ready .memoCtxWing.l{top:66px;left:1px;transform:rotate(48deg)}
-      .memoContextOwl.pose-running .memoCtxHead{transform:rotate(4deg) translateY(-2px)}.memoContextOwl.pose-running .memoCtxBody{transform:rotate(-3deg) translateY(-1px)}.memoContextOwl.pose-running .memoCtxWing.l{top:65px;left:-5px;transform:rotate(64deg)}.memoContextOwl.pose-running .memoCtxWing.r{top:58px;right:-9px;transform:scaleX(-1) rotate(-69deg)}.memoContextOwl.pose-running .memoCtxFoot.l{transform:translateY(-3px) rotate(-12deg)}
-      .memoContextOwl.pose-pause .memoCtxHead{transform:rotate(-7deg) translateY(2px)}.memoContextOwl.pose-pause .memoCtxWing.l{top:78px;left:8px;transform:rotate(28deg)}.memoContextOwl.pose-pause .memoCtxWing.r{top:79px;right:8px;transform:scaleX(-1) rotate(28deg)}
-      .memoContextOwl.pose-finished .memoCtxHead{transform:translateY(-5px)}.memoContextOwl.pose-finished .memoCtxWing.l{top:48px;left:-10px;transform:rotate(145deg)}.memoContextOwl.pose-finished .memoCtxWing.r{top:48px;right:-10px;transform:scaleX(-1) rotate(-145deg)}.memoContextOwl.pose-finished .memoCtxBody{transform:translateY(-2px)}
+      .memoContextOwl.pose-ready .memoCtxFace{transform:rotate(-3deg)}.memoContextOwl.pose-ready .memoCtxWingRight{transform:rotate(10deg)}
+      .memoContextOwl.pose-running .memoCtxCharacter{transform:rotate(2deg) translateY(-2px)}.memoContextOwl.pose-running .memoCtxWingRight{transform:rotate(-12deg) translateY(-5px)}.memoContextOwl.pose-running .memoCtxWingLeft{transform:rotate(8deg)}
+      .memoContextOwl.pose-pause .memoCtxFace{transform:rotate(-7deg) translateY(2px)}.memoContextOwl.pose-pause .memoCtxWingRight{transform:rotate(22deg) translateY(5px)}
+      .memoContextOwl.pose-finished .memoCtxCharacter{transform:translateY(-5px)}.memoContextOwl.pose-finished .memoCtxWingLeft{transform:rotate(35deg) translate(-4px,-4px)}.memoContextOwl.pose-finished .memoCtxWingRight{transform:rotate(-18deg) translate(4px,-8px)}
 
-      .memoOwlChapter{position:relative;display:flex;align-items:center;gap:34px;width:min(880px,100%);min-height:190px;box-sizing:border-box;margin:26px 0 14px;padding:22px 34px 22px 28px;border:1px solid #e4d7c7;border-radius:28px;background:linear-gradient(135deg,color-mix(in srgb,#f6efe3 72%,var(--panel)),var(--panel));box-shadow:0 12px 34px rgba(80,48,30,.075);overflow:hidden}.memoOwlChapter:after{content:"";position:absolute;width:220px;height:220px;border-radius:50%;right:-95px;top:-125px;background:rgba(176,120,80,.055);pointer-events:none}.memoOwlChapter .memoOwlMascot{width:178px;height:170px;flex:0 0 178px;display:grid;place-items:center;filter:drop-shadow(0 12px 12px rgba(80,48,30,.14))}.memoOwlChapter .memoContextOwl{transform:scale(1.16) rotate(-2deg);transform-origin:center}
-      .memoOwlChapterText{min-width:0}.memoOwlChapterText small{display:block;margin-bottom:9px;color:#9b603f;font-size:10px;font-weight:900;letter-spacing:.13em}.memoOwlChapterText p{margin:0;color:var(--text);font-size:clamp(19px,2.4vw,25px);font-weight:800;line-height:1.3;letter-spacing:-.02em}.memoOwlChapterText span{display:block;margin-top:10px;color:var(--muted);font-size:11px;font-weight:650}
-      .memoOwlTimer{display:flex;align-items:center;gap:12px;margin:13px 0 -4px;padding:10px 12px;border-radius:14px;background:linear-gradient(135deg,#f7efe4,var(--panel));border:1px solid #e4d7c7}.memoOwlTimer .memoOwlMascot{position:relative;width:68px;height:66px;flex:0 0 68px;overflow:visible}.memoOwlTimer .memoContextOwl{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.43);transform-origin:center}.memoOwlTimer p{margin:0;font-size:10px;font-weight:800;line-height:1.4;color:var(--text)}.workTimerPanel.running .memoOwlTimer{border-color:#c9ab8e}.workTimerPanel.finished .memoOwlTimer{background:rgba(54,184,121,.1);border-color:rgba(54,184,121,.25)}
+      .memoOwlChapter{position:relative;display:flex;align-items:center;gap:34px;width:min(880px,100%);min-height:238px;box-sizing:border-box;margin:26px 0 14px;padding:18px 38px 18px 24px;border:1px solid #e4d7c7;border-radius:28px;background:linear-gradient(135deg,color-mix(in srgb,#f6efe3 72%,var(--panel)),var(--panel));box-shadow:0 12px 34px rgba(80,48,30,.075);overflow:hidden}
+      .memoOwlChapter:after{content:"";position:absolute;width:250px;height:250px;border-radius:50%;right:-110px;top:-145px;background:rgba(176,120,80,.055);pointer-events:none}
+      .memoOwlChapter .memoOwlMascot{width:230px;height:218px;flex:0 0 230px;display:grid;place-items:center;filter:drop-shadow(0 13px 12px rgba(80,48,30,.13))}
+      .memoOwlChapter .memoContextOwl{transform:scale(1.02);transform-origin:center}
+      .memoOwlChapterText{min-width:0;position:relative;z-index:2}.memoOwlChapterText small{display:block;margin-bottom:10px;color:#9b603f;font-size:10px;font-weight:900;letter-spacing:.13em}.memoOwlChapterText p{margin:0;color:var(--text);font-size:clamp(20px,2.4vw,27px);font-weight:800;line-height:1.25;letter-spacing:-.025em}.memoOwlChapterText span{display:block;margin-top:11px;color:var(--muted);font-size:11px;font-weight:650}
+      .memoOwlTimer{display:flex;align-items:center;gap:12px;margin:13px 0 -4px;padding:10px 12px;border-radius:14px;background:linear-gradient(135deg,#f7efe4,var(--panel));border:1px solid #e4d7c7}.memoOwlTimer .memoOwlMascot{position:relative;width:72px;height:70px;flex:0 0 72px;overflow:visible}.memoOwlTimer .memoContextOwl{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.34);transform-origin:center}.memoOwlTimer p{margin:0;font-size:10px;font-weight:800;line-height:1.4;color:var(--text)}.workTimerPanel.running .memoOwlTimer{border-color:#c9ab8e}.workTimerPanel.finished .memoOwlTimer{background:rgba(54,184,121,.1);border-color:rgba(54,184,121,.25)}
       .dark .memoOwlChapter,.dark .memoOwlTimer{background:linear-gradient(135deg,#292622,var(--panel));border-color:#4b4037}
-      @media(max-width:650px){.memoOwlChapter{min-height:148px;margin-top:18px;padding:17px 18px;gap:17px;border-radius:22px}.memoOwlChapter .memoOwlMascot{width:112px;height:116px;flex-basis:112px}.memoOwlChapter .memoContextOwl{transform:scale(.8) rotate(-2deg)}.memoOwlChapterText p{font-size:16px}.memoOwlChapterText span{font-size:9px}}
-      @media(prefers-reduced-motion:reduce){.memoCtxWing,.memoCtxHead,.memoCtxBody,.memoCtxBelly,.memoCtxEye:before{transition:none}}
+      @media(max-width:650px){.memoOwlChapter{min-height:170px;margin-top:18px;padding:12px 16px;gap:12px;border-radius:22px}.memoOwlChapter .memoOwlMascot{width:135px;height:145px;flex-basis:135px}.memoOwlChapter .memoContextOwl{transform:scale(.68)}.memoOwlChapterText p{font-size:16px}.memoOwlChapterText span{font-size:9px}}
+      @media(prefers-reduced-motion:reduce){.memoCtxCharacter,.memoCtxFace,.memoCtxWingLeft,.memoCtxWingRight,.memoCtxIris,.memoCtxPupil,.memoCtxGlint{transition:none}}
     `;document.head.appendChild(style)
   }
 
