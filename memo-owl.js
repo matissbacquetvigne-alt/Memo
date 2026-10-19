@@ -4,88 +4,73 @@
   const chapterLines=["Alors, quel chapitre on avance aujourd’hui ?","On avance sur quoi aujourd’hui ?","Choisis ton chapitre, je révise avec toi.","Un chapitre à la fois. Lequel on attaque ?"];
   const runningLines=["Allez, toujours plus !","Garde le rythme, tu avances !","Concentre-toi, je reste avec toi.","Encore un peu, ça travaille bien !"];
 
-  /* Hibou contextuel Memo. Dessin totalement indépendant du hibou d'accueil. */
-  const owl=(pose='')=>`<div class="memoContextOwl ${pose}" role="img" aria-label="Hibou Memo">
-    <svg class="memoCtxSvg" viewBox="0 0 240 230" aria-hidden="true">
-      <ellipse class="memoCtxShadow" cx="113" cy="216" rx="82" ry="10"/>
-      <g class="memoCtxCharacter">
-        <!-- corps compact : la tête chevauche vraiment le torse -->
-        <path class="memoCtxBody" d="M73 101 C55 113 48 137 52 164 C56 190 75 207 104 209 C132 211 153 197 162 174 C171 151 167 124 151 108 C133 91 94 88 73 101 Z"/>
-        <path class="memoCtxBelly" d="M82 126 C89 115 104 110 119 114 C136 119 145 134 144 153 C143 177 132 196 114 199 C94 202 78 187 75 163 C73 147 76 135 82 126 Z"/>
+  /*
+    Les hiboux contextuels ne sont PAS un même dessin articulé.
+    Chaque apparition est une illustration différente de la même mascotte :
+    même palette / grands yeux / bec orange, mais proportions, silhouette et pose libres.
+    Le hibou d'accueil reste totalement indépendant dans home-mascot.js.
+  */
+  const chapterOwl=()=>`<div class="memoChapterOwl" role="img" aria-label="Hibou Memo qui présente les chapitres"><svg viewBox="0 0 250 235" aria-hidden="true">
+    <ellipse class="owShadow" cx="122" cy="220" rx="78" ry="9"/>
+    <path class="owBody" d="M64 104 C47 121 44 154 54 181 C64 207 89 218 119 216 C149 215 169 201 177 177 C186 150 180 120 159 103 C138 86 84 86 64 104Z"/>
+    <path class="owBelly" d="M82 126 C92 113 110 108 126 112 C146 117 157 136 155 158 C153 187 139 205 119 207 C97 209 80 191 77 163 C75 147 77 134 82 126Z"/>
+    <path class="owEar" d="M54 64 C43 47 45 25 58 13 C72 22 80 35 81 51Z"/><path class="owEar" d="M151 49 C157 31 170 20 185 18 C190 36 184 52 170 65Z"/>
+    <path class="owHead" d="M52 55 C68 32 96 25 123 31 C150 27 177 42 187 65 C197 88 186 112 164 126 C144 139 111 140 84 131 C58 122 42 103 42 81 C42 71 45 62 52 55Z"/>
+    <path class="owMask" d="M61 72 C68 51 88 44 106 53 C114 57 119 64 122 73 C126 62 135 54 145 52 C163 49 180 63 181 82 C181 104 164 117 145 117 C134 117 126 111 121 102 C115 113 105 119 93 119 C73 119 58 104 57 85 C57 80 58 76 61 72Z"/>
+    <circle class="owIris" cx="92" cy="82" r="14"/><circle class="owPupil" cx="92" cy="82" r="8"/><circle class="owGlint" cx="87" cy="77" r="4"/>
+    <circle class="owIris" cx="149" cy="80" r="14"/><circle class="owPupil" cx="149" cy="80" r="8"/><circle class="owGlint" cx="144" cy="75" r="4"/>
+    <path class="owBeak" d="M108 103 Q121 92 134 102 L121 116Z"/><path class="owMouth" d="M114 113 Q121 122 129 113 Q128 126 121 128 Q114 125 114 113Z"/>
+    <path class="owWingDown" d="M67 129 C47 133 34 151 36 170 C38 187 49 195 62 188 C77 181 85 164 84 148 C83 137 77 130 67 129Z"/>
+    <path class="owWingUp" d="M164 131 C177 116 185 96 186 77 C195 85 197 99 193 112 C204 104 211 93 214 82 C222 96 218 112 207 125 C218 122 227 116 233 108 C234 127 220 145 201 154 C184 163 168 162 158 151 C151 143 154 137 164 131Z"/>
+    <path class="owFeather" d="M174 143 Q194 137 208 122 M184 151 Q205 146 219 134"/>
+    <path class="owLeg" d="M95 202 L93 217 M143 201 L145 216"/><path class="owFoot" d="M93 214 Q79 214 72 222 Q87 218 97 222 Q103 216 110 221 M145 214 Q132 214 126 222 Q140 218 150 222 Q157 216 164 221"/>
+    <g class="owSpark"><path d="M211 57 L218 40"/><path d="M225 64 L239 54"/></g>
+  </svg></div>`;
 
-        <!-- grande tête expressive, inclinée comme dans la maquette -->
-        <g class="memoCtxHead">
-          <path class="memoCtxHeadShape" d="M39 47 C47 26 66 15 89 14 C111 7 139 13 155 30 C174 48 176 75 164 95 C151 117 124 127 94 122 C65 119 42 104 34 82 C30 69 31 57 39 47 Z"/>
-          <path class="memoCtxTuft l" d="M45 45 C34 34 33 18 42 7 C56 12 65 22 68 34 Z"/>
-          <path class="memoCtxTuft r" d="M137 29 C144 14 157 7 170 9 C174 23 168 37 157 46 Z"/>
-          <circle class="memoCtxEyeCream l" cx="78" cy="67" r="31"/>
-          <circle class="memoCtxEyeCream r" cx="132" cy="64" r="31"/>
-          <circle class="memoCtxIris l" cx="80" cy="70" r="16"/><circle class="memoCtxIris r" cx="134" cy="67" r="16"/>
-          <circle class="memoCtxPupil l" cx="80" cy="70" r="10"/><circle class="memoCtxPupil r" cx="134" cy="67" r="10"/>
-          <circle class="memoCtxGlint l" cx="74" cy="63" r="5"/><circle class="memoCtxGlint r" cx="128" cy="60" r="5"/>
-          <path class="memoCtxBeak" d="M96 91 Q107 82 119 90 L108 103 Z"/>
-          <path class="memoCtxMouth" d="M101 102 Q108 111 116 102 Q115 115 108 117 Q101 114 101 102 Z"/>
-        </g>
-
-        <!-- aile gauche intégrée au corps -->
-        <path class="memoCtxWingLeft" d="M67 125 C48 128 34 145 35 163 C36 176 44 184 56 181 C70 178 79 164 82 148 C84 137 78 128 67 125 Z"/>
-
-        <!-- aile droite levée, faite de grandes plumes organiques -->
-        <g class="memoCtxWingRight">
-          <path d="M148 125 C162 112 173 95 177 76 C185 84 184 99 180 110 C191 102 199 90 202 78 C211 91 206 108 196 121 C207 117 216 110 222 101 C225 119 213 136 196 146 C181 155 165 158 153 149 C143 142 140 133 148 125 Z"/>
-          <path class="memoCtxFeatherLine" d="M160 137 Q178 132 192 117 M169 145 Q189 141 203 128"/>
-        </g>
-
-        <!-- pattes courtes et solides -->
-        <g class="memoCtxFeet">
-          <path class="memoCtxLeg" d="M89 197 L87 211 M135 195 L137 210"/>
-          <path class="memoCtxFoot" d="M87 209 Q73 208 67 216 Q81 213 91 216 Q98 211 104 216 M137 208 Q125 209 119 216 Q133 213 142 216 Q150 211 157 216"/>
-        </g>
-      </g>
-    </svg>
-    <span class="memoCtxTimerBadge"><i></i></span>
-  </div>`;
+  const timerOwl=(pose='ready')=>`<div class="memoTimerOwl ${pose}" role="img" aria-label="Hibou Memo du chrono"><svg viewBox="0 0 120 120" aria-hidden="true">
+    <ellipse class="owShadow" cx="59" cy="111" rx="34" ry="5"/>
+    <path class="owTimerBody" d="M31 49 C24 60 25 82 34 96 C42 108 56 111 69 107 C83 103 91 91 91 75 C91 58 83 47 70 42 C57 37 39 40 31 49Z"/>
+    <path class="owTimerBelly" d="M43 68 C47 61 56 59 63 61 C73 64 78 74 76 86 C74 99 67 104 59 104 C49 103 43 95 41 84 C40 78 41 72 43 68Z"/>
+    <path class="owTimerEar" d="M31 43 C24 34 25 22 31 16 C39 20 44 27 45 35Z"/><path class="owTimerEar" d="M72 35 C76 25 83 19 91 19 C94 29 90 39 84 45Z"/>
+    <path class="owTimerHead" d="M28 39 C37 27 50 24 61 27 C74 24 87 31 92 42 C98 56 90 69 79 75 C67 81 48 80 37 74 C25 68 20 55 24 46 C25 43 26 41 28 39Z"/>
+    <path class="owTimerMask" d="M31 46 C35 36 46 34 54 39 C58 41 60 45 61 49 C64 43 68 39 74 38 C84 37 91 45 91 54 C91 64 83 70 74 70 C68 70 64 67 61 62 C58 68 53 71 47 71 C37 71 30 63 30 54 C30 51 30 48 31 46Z"/>
+    <circle class="owTimerIris" cx="46" cy="52" r="7"/><circle class="owTimerPupil" cx="46" cy="52" r="4"/><circle class="owTimerGlint" cx="43" cy="49" r="2"/>
+    <circle class="owTimerIris" cx="75" cy="51" r="7"/><circle class="owTimerPupil" cx="75" cy="51" r="4"/><circle class="owTimerGlint" cx="72" cy="48" r="2"/>
+    <path class="owTimerBeak" d="M55 63 Q61 58 67 63 L61 70Z"/>
+    <path class="owTimerWing l" d="M34 70 C23 73 18 84 21 94 C24 102 31 104 37 98 C43 92 45 82 43 76 C41 72 38 70 34 70Z"/>
+    <path class="owTimerWing r" d="M85 70 C95 72 101 82 99 92 C97 101 90 104 84 98 C78 92 76 82 78 76 C79 72 82 70 85 70Z"/>
+    <path class="owTimerFoot" d="M48 103 Q41 107 36 108 M48 103 Q50 108 54 109 M72 102 Q67 107 62 108 M72 102 Q76 106 80 107"/>
+  </svg><span class="memoWatch"><i></i></span></div>`;
 
   if(!document.getElementById('memoOwlStyle')){
-    const style=document.createElement('style');style.id='memoOwlStyle';
-    style.textContent=`
-      .memoContextOwl{position:relative;width:240px;height:230px;isolation:isolate;--memo-brown:#b07850;--memo-dark:#774932;--memo-face:#bd8157;--memo-mid:#895538;--memo-cream:#f4ddbf;--memo-eye:#fff6e9;--memo-ring:#e6c39c;--memo-iris:#8b4d25;--memo-pupil:#4c2b1e;--memo-orange:#efa03e}
-      .memoCtxSvg{display:block;width:100%;height:100%;overflow:visible}.memoCtxShadow{fill:rgba(60,38,28,.18)}
-      .memoCtxCharacter{transform-origin:112px 208px;transition:transform .38s ease}.memoCtxBody{fill:var(--memo-brown)}.memoCtxBelly{fill:var(--memo-cream)}
-      .memoCtxHead{transform-origin:108px 102px;transition:transform .35s ease}.memoCtxHeadShape{fill:var(--memo-face)}.memoCtxTuft{fill:var(--memo-dark)}
-      .memoCtxEyeCream{fill:var(--memo-eye);stroke:var(--memo-ring);stroke-width:6}.memoCtxIris{fill:var(--memo-iris)}.memoCtxPupil{fill:var(--memo-pupil)}.memoCtxGlint{fill:#fff}.memoCtxBeak{fill:var(--memo-orange)}.memoCtxMouth{fill:#df7054}
-      .memoCtxWingLeft,.memoCtxWingRight{fill:var(--memo-mid);transform-box:fill-box;transition:transform .4s cubic-bezier(.2,.8,.2,1)}.memoCtxWingLeft{transform-origin:85% 15%}.memoCtxWingRight{transform-origin:12% 80%}.memoCtxFeatherLine{fill:none;stroke:var(--memo-dark);stroke-width:3;stroke-linecap:round;opacity:.28}
-      .memoCtxLeg,.memoCtxFoot{fill:none;stroke:var(--memo-orange);stroke-width:6;stroke-linecap:round;stroke-linejoin:round}.memoCtxIris,.memoCtxPupil,.memoCtxGlint{transition:transform .3s ease}
-      .memoCtxTimerBadge{display:none;position:absolute;z-index:8;right:20px;bottom:22px;width:36px;height:36px;border-radius:50%;box-sizing:border-box;background:#fff9e9;border:3px solid #6559a9;box-shadow:0 4px 0 rgba(92,81,155,.18)}.memoCtxTimerBadge:before{content:"";position:absolute;left:11px;top:-8px;width:8px;height:7px;border-radius:4px 4px 0 0;background:#6559a9}.memoCtxTimerBadge:after{content:"";position:absolute;left:15px;top:7px;width:2px;height:10px;border-radius:2px;background:#6559a9;transform-origin:bottom;transform:rotate(-35deg)}.memoCtxTimerBadge i{position:absolute;left:15px;top:16px;width:8px;height:2px;border-radius:2px;background:#6559a9}
-
-      .memoContextOwl.pose-chapter .memoCtxCharacter{transform:rotate(-1deg)}.memoContextOwl.pose-chapter .memoCtxHead{transform:rotate(-8deg) translate(-3px,3px)}.memoContextOwl.pose-chapter .memoCtxIris,.memoContextOwl.pose-chapter .memoCtxPupil,.memoContextOwl.pose-chapter .memoCtxGlint{transform:translate(3px,1px)}.memoContextOwl.pose-chapter .memoCtxWingRight{transform:rotate(-5deg) translate(1px,-2px)}
-      .memoContextOwl.pose-ready .memoCtxTimerBadge,.memoContextOwl.pose-running .memoCtxTimerBadge,.memoContextOwl.pose-pause .memoCtxTimerBadge,.memoContextOwl.pose-finished .memoCtxTimerBadge{display:block}.memoContextOwl.pose-ready .memoCtxHead{transform:rotate(-3deg)}.memoContextOwl.pose-ready .memoCtxWingRight{transform:rotate(10deg)}.memoContextOwl.pose-running .memoCtxCharacter{transform:rotate(2deg) translateY(-2px)}.memoContextOwl.pose-running .memoCtxWingRight{transform:rotate(-12deg) translateY(-5px)}.memoContextOwl.pose-pause .memoCtxHead{transform:rotate(-7deg) translateY(2px)}.memoContextOwl.pose-pause .memoCtxWingRight{transform:rotate(18deg) translateY(5px)}.memoContextOwl.pose-finished .memoCtxCharacter{transform:translateY(-5px)}.memoContextOwl.pose-finished .memoCtxWingLeft{transform:rotate(25deg)}.memoContextOwl.pose-finished .memoCtxWingRight{transform:rotate(-14deg) translateY(-8px)}
-
-      .memoOwlChapter{position:relative;display:flex;align-items:center;gap:30px;width:min(880px,100%);min-height:250px;box-sizing:border-box;margin:26px 0 14px;padding:14px 38px 14px 20px;border:1px solid #e4d7c7;border-radius:28px;background:linear-gradient(135deg,color-mix(in srgb,#f6efe3 72%,var(--panel)),var(--panel));box-shadow:0 12px 34px rgba(80,48,30,.075);overflow:hidden}.memoOwlChapter:after{content:"";position:absolute;width:250px;height:250px;border-radius:50%;right:-110px;top:-145px;background:rgba(176,120,80,.055);pointer-events:none}.memoOwlChapter .memoOwlMascot{width:250px;height:225px;flex:0 0 250px;display:grid;place-items:center;filter:drop-shadow(0 13px 12px rgba(80,48,30,.13))}.memoOwlChapter .memoContextOwl{transform:scale(1);transform-origin:center}
-      .memoOwlChapterText{min-width:0;position:relative;z-index:2}.memoOwlChapterText small{display:block;margin-bottom:10px;color:#9b603f;font-size:10px;font-weight:900;letter-spacing:.13em}.memoOwlChapterText p{margin:0;color:var(--text);font-size:clamp(20px,2.4vw,27px);font-weight:800;line-height:1.25;letter-spacing:-.025em}.memoOwlChapterText span{display:block;margin-top:11px;color:var(--muted);font-size:11px;font-weight:650}
-      .memoOwlTimer{display:flex;align-items:center;gap:12px;margin:13px 0 -4px;padding:10px 12px;border-radius:14px;background:linear-gradient(135deg,#f7efe4,var(--panel));border:1px solid #e4d7c7}.memoOwlTimer .memoOwlMascot{position:relative;width:72px;height:70px;flex:0 0 72px;overflow:visible}.memoOwlTimer .memoContextOwl{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.3);transform-origin:center}.memoOwlTimer p{margin:0;font-size:10px;font-weight:800;line-height:1.4;color:var(--text)}.workTimerPanel.running .memoOwlTimer{border-color:#c9ab8e}.workTimerPanel.finished .memoOwlTimer{background:rgba(54,184,121,.1);border-color:rgba(54,184,121,.25)}
+    const style=document.createElement('style');style.id='memoOwlStyle';style.textContent=`
+      .memoChapterOwl{width:250px;height:235px}.memoChapterOwl svg,.memoTimerOwl svg{display:block;width:100%;height:100%;overflow:visible}
+      .memoChapterOwl .owShadow,.memoTimerOwl .owShadow{fill:rgba(54,34,25,.18)}
+      .memoChapterOwl .owBody{fill:#a96f49}.memoChapterOwl .owBelly{fill:#f4ddbf}.memoChapterOwl .owHead{fill:#bd8157}.memoChapterOwl .owEar{fill:#774932}.memoChapterOwl .owMask{fill:#fff6e9;stroke:#e6c39c;stroke-width:5;stroke-linejoin:round}.memoChapterOwl .owIris{fill:#8b4d25}.memoChapterOwl .owPupil{fill:#4c2b1e}.memoChapterOwl .owGlint{fill:#fff}.memoChapterOwl .owBeak{fill:#efa03e}.memoChapterOwl .owMouth{fill:#dc7055}.memoChapterOwl .owWingDown,.memoChapterOwl .owWingUp{fill:#895538}.memoChapterOwl .owFeather{fill:none;stroke:#774932;stroke-width:3;stroke-linecap:round;opacity:.28}.memoChapterOwl .owLeg,.memoChapterOwl .owFoot,.memoChapterOwl .owSpark path{fill:none;stroke:#efa03e;stroke-width:6;stroke-linecap:round;stroke-linejoin:round}.memoChapterOwl .owSpark path{stroke-width:5}
+      .memoTimerOwl{position:relative;width:120px;height:120px}.memoTimerOwl .owTimerBody{fill:#a96f49}.memoTimerOwl .owTimerBelly{fill:#f4ddbf}.memoTimerOwl .owTimerHead{fill:#bd8157}.memoTimerOwl .owTimerEar{fill:#774932}.memoTimerOwl .owTimerMask{fill:#fff6e9;stroke:#e6c39c;stroke-width:3}.memoTimerOwl .owTimerIris{fill:#8b4d25}.memoTimerOwl .owTimerPupil{fill:#4c2b1e}.memoTimerOwl .owTimerGlint{fill:#fff}.memoTimerOwl .owTimerBeak{fill:#efa03e}.memoTimerOwl .owTimerWing{fill:#895538;transform-box:fill-box;transition:transform .35s ease}.memoTimerOwl .owTimerWing.l{transform-origin:90% 15%}.memoTimerOwl .owTimerWing.r{transform-origin:10% 15%}.memoTimerOwl .owTimerFoot{fill:none;stroke:#efa03e;stroke-width:4;stroke-linecap:round}
+      .memoWatch{position:absolute;right:4px;bottom:12px;width:25px;height:25px;border-radius:50%;background:#fff9e9;border:3px solid #6559a9;box-sizing:border-box}.memoWatch:before{content:"";position:absolute;left:7px;top:-7px;width:6px;height:6px;border-radius:3px 3px 0 0;background:#6559a9}.memoWatch:after{content:"";position:absolute;left:10px;top:5px;width:2px;height:8px;background:#6559a9;transform:rotate(-35deg);transform-origin:bottom}.memoWatch i{position:absolute;left:10px;top:11px;width:6px;height:2px;background:#6559a9}
+      .memoTimerOwl.running .owTimerWing.r{transform:rotate(-58deg) translateY(-4px)}.memoTimerOwl.running .owTimerWing.l{transform:rotate(12deg)}.memoTimerOwl.pause .owTimerWing.l,.memoTimerOwl.pause .owTimerWing.r{transform:rotate(10deg)}.memoTimerOwl.finished .owTimerWing.l{transform:rotate(115deg) translate(-2px,-4px)}.memoTimerOwl.finished .owTimerWing.r{transform:rotate(-115deg) translate(2px,-4px)}
+      .memoOwlChapter{position:relative;display:flex;align-items:center;gap:28px;width:min(880px,100%);min-height:250px;box-sizing:border-box;margin:26px 0 14px;padding:12px 38px 12px 18px;border:1px solid #e4d7c7;border-radius:28px;background:linear-gradient(135deg,color-mix(in srgb,#f6efe3 72%,var(--panel)),var(--panel));box-shadow:0 12px 34px rgba(80,48,30,.075);overflow:hidden}.memoOwlChapter:after{content:"";position:absolute;width:250px;height:250px;border-radius:50%;right:-110px;top:-145px;background:rgba(176,120,80,.055);pointer-events:none}.memoOwlChapter .memoOwlMascot{width:260px;height:225px;flex:0 0 260px;display:grid;place-items:center;filter:drop-shadow(0 13px 12px rgba(80,48,30,.12))}.memoOwlChapterText{min-width:0;position:relative;z-index:2}.memoOwlChapterText small{display:block;margin-bottom:10px;color:#9b603f;font-size:10px;font-weight:900;letter-spacing:.13em}.memoOwlChapterText p{margin:0;color:var(--text);font-size:clamp(20px,2.4vw,27px);font-weight:800;line-height:1.25;letter-spacing:-.025em}.memoOwlChapterText span{display:block;margin-top:11px;color:var(--muted);font-size:11px;font-weight:650}
+      .memoOwlTimer{display:flex;align-items:center;gap:12px;margin:13px 0 -4px;padding:9px 12px;border-radius:14px;background:linear-gradient(135deg,#f7efe4,var(--panel));border:1px solid #e4d7c7}.memoOwlTimer .memoOwlMascot{position:relative;width:64px;height:62px;flex:0 0 64px;overflow:visible}.memoOwlTimer .memoTimerOwl{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.52);transform-origin:center}.memoOwlTimer p{margin:0;font-size:10px;font-weight:800;line-height:1.4;color:var(--text)}.workTimerPanel.running .memoOwlTimer{border-color:#c9ab8e}.workTimerPanel.finished .memoOwlTimer{background:rgba(54,184,121,.1);border-color:rgba(54,184,121,.25)}
       .dark .memoOwlChapter,.dark .memoOwlTimer{background:linear-gradient(135deg,#292622,var(--panel));border-color:#4b4037}
-      @media(max-width:650px){.memoOwlChapter{min-height:175px;margin-top:18px;padding:10px 16px;gap:10px;border-radius:22px}.memoOwlChapter .memoOwlMascot{width:145px;height:150px;flex-basis:145px}.memoOwlChapter .memoContextOwl{transform:scale(.63)}.memoOwlChapterText p{font-size:16px}.memoOwlChapterText span{font-size:9px}}
-      @media(prefers-reduced-motion:reduce){.memoCtxCharacter,.memoCtxHead,.memoCtxWingLeft,.memoCtxWingRight,.memoCtxIris,.memoCtxPupil,.memoCtxGlint{transition:none}}
+      @media(max-width:650px){.memoOwlChapter{min-height:175px;margin-top:18px;padding:10px 16px;gap:10px;border-radius:22px}.memoOwlChapter .memoOwlMascot{width:145px;height:150px;flex-basis:145px}.memoOwlChapter .memoChapterOwl{transform:scale(.62)}.memoOwlChapterText p{font-size:16px}.memoOwlChapterText span{font-size:9px}}
+      @media(prefers-reduced-motion:reduce){.memoTimerOwl .owTimerWing{transition:none}}
     `;document.head.appendChild(style)
   }
 
   if(subject&&!document.getElementById('memoOwlChapter')){
-    const box=document.createElement('div');box.id='memoOwlChapter';box.className='memoOwlChapter';
-    box.innerHTML=`<div class="memoOwlMascot">${owl('pose-chapter')}</div><div class="memoOwlChapterText"><small>TON COMPAGNON DE RÉVISION</small><p id="memoOwlChapterText"></p><span>On avance ensemble, à ton rythme.</span></div>`;
+    const box=document.createElement('div');box.id='memoOwlChapter';box.className='memoOwlChapter';box.innerHTML=`<div class="memoOwlMascot">${chapterOwl()}</div><div class="memoOwlChapterText"><small>TON COMPAGNON DE RÉVISION</small><p id="memoOwlChapterText"></p><span>On avance ensemble, à ton rythme.</span></div>`;
     const title=subject.querySelector('.title');if(title)title.insertAdjacentElement('afterend',box);else subject.prepend(box);
-    const sayChapter=()=>{const t=document.getElementById('memoOwlChapterText');if(t)t.textContent=pick(chapterLines)};
-    sayChapter();new MutationObserver(()=>{if(subject.classList.contains('on'))sayChapter()}).observe(subject,{attributes:true,attributeFilter:['class']})
+    const sayChapter=()=>{const t=document.getElementById('memoOwlChapterText');if(t)t.textContent=pick(chapterLines)};sayChapter();new MutationObserver(()=>{if(subject.classList.contains('on'))sayChapter()}).observe(subject,{attributes:true,attributeFilter:['class']})
   }
 
   function setupTimer(){
     const timer=document.getElementById('workTimerPanel');if(!timer||document.getElementById('memoOwlTimer'))return !!timer;
-    const box=document.createElement('div');box.id='memoOwlTimer';box.className='memoOwlTimer';
-    box.innerHTML=`<div class="memoOwlMascot">${owl('pose-ready')}</div><p id="memoOwlTimerText">C’est le moment de s’organiser.</p>`;
+    const box=document.createElement('div');box.id='memoOwlTimer';box.className='memoOwlTimer';box.innerHTML=`<div class="memoOwlMascot">${timerOwl('ready')}</div><p id="memoOwlTimerText">C’est le moment de s’organiser.</p>`;
     const state=document.getElementById('workTimerState');if(state)state.insertAdjacentElement('afterend',box);else timer.appendChild(box);
-    const text=box.querySelector('p'),mascot=box.querySelector('.memoContextOwl');let lastRunning='';
-    const setPose=pose=>{mascot.classList.remove('pose-ready','pose-running','pose-pause','pose-finished');mascot.classList.add(pose)};
-    const update=()=>{const label=(state?.textContent||'').toLowerCase();if(timer.classList.contains('finished')){setPose('pose-finished');text.textContent='Bravo, session terminée ! Tu peux être fier de toi.'}else if(label.includes('pause')){setPose('pose-pause');lastRunning='';text.textContent='Une petite pause, puis on repart !'}else if(timer.classList.contains('running')){setPose('pose-running');if(!lastRunning)lastRunning=pick(runningLines);text.textContent=lastRunning}else{setPose('pose-ready');lastRunning='';text.textContent='C’est le moment de s’organiser. Combien de temps on travaille ?'}};
+    const text=box.querySelector('p'),mascot=box.querySelector('.memoTimerOwl');let lastRunning='';
+    const setPose=pose=>{mascot.classList.remove('ready','running','pause','finished');mascot.classList.add(pose)};
+    const update=()=>{const label=(state?.textContent||'').toLowerCase();if(timer.classList.contains('finished')){setPose('finished');text.textContent='Bravo, session terminée ! Tu peux être fier de toi.'}else if(label.includes('pause')){setPose('pause');lastRunning='';text.textContent='Une petite pause, puis on repart !'}else if(timer.classList.contains('running')){setPose('running');if(!lastRunning)lastRunning=pick(runningLines);text.textContent=lastRunning}else{setPose('ready');lastRunning='';text.textContent='C’est le moment de s’organiser. Combien de temps on travaille ?'}};
     new MutationObserver(update).observe(timer,{attributes:true,attributeFilter:['class']});if(state)new MutationObserver(update).observe(state,{childList:true,characterData:true,subtree:true});setInterval(()=>{if(timer.classList.contains('running')){lastRunning=pick(runningLines);update()}},180000);update();return true
   }
   if(!setupTimer()){let tries=0;const wait=setInterval(()=>{tries++;if(setupTimer()||tries>20)clearInterval(wait)},100)}
