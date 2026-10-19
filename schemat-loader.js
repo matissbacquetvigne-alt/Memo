@@ -1,0 +1,1 @@
+(()=>{if(window.memoOpenSchemat)return;const s=document.createElement('script');s.src='schemat.js';s.async=false;document.body.appendChild(s)})();
