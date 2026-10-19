@@ -5,4 +5,5 @@ load('voice-dictation.js?v=20261019-1','voice');
 load('course.js?v=20261019-1','course');
 load('course-notes.js?v=20261019-1','courseNotes');
 load('study-notes.js?v=20261019-1','studyNotes');
+load('home-mascot.js?v=20261019-1','homeMascot');
 })();
