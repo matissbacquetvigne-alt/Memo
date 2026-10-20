@@ -14,28 +14,30 @@
   if(course.querySelector('.courseSchematics'))return true;
   {
     const gallery=document.createElement('div');gallery.className='courseSchematics';gallery.hidden=true;
-    gallery.innerHTML='<h3>Schémas du chapitre</h3><p>Les schémas enregistrés dans « Schémas », disponibles aussi dans ton cours. Clique pour agrandir.</p><div class="courseSchematicsGrid"></div>';
+    gallery.innerHTML='<h3>Schémas du chapitre</h3><p>Les schémas que tu as choisi d’ajouter à ton cours. Clique pour agrandir.</p><div class="courseSchematicsGrid"></div>';
     course.appendChild(gallery);
     const preview=document.createElement('dialog');preview.className='courseSchematicPreview';preview.setAttribute('aria-labelledby','courseSchematicTitle');
     preview.innerHTML='<div><h3 id="courseSchematicTitle"></h3><button class="soft" aria-label="Fermer le schéma">×</button></div><canvas width="1200" height="800"></canvas>';
     document.body.appendChild(preview);preview.querySelector('button').onclick=()=>preview.close();
     preview.addEventListener('click',e=>{if(e.target===preview){const r=preview.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)preview.close()}});
     const css=document.createElement('style');css.textContent='.courseSchematics{margin-top:24px;padding:20px;border:1px solid var(--line);border-radius:18px;background:var(--panel)}.courseSchematics[hidden]{display:none}.courseSchematics h3{margin:0 0 8px}.courseSchematics p{color:var(--muted);font-size:12px}.courseSchematicsGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}.courseSchematicCard{padding:10px;border:1px solid var(--line);border-radius:14px;background:var(--bg);color:var(--text);text-align:left}.courseSchematicCard canvas{width:100%;height:auto;border-radius:8px;background:white;display:block}.courseSchematicCard b{display:block;margin-top:10px;overflow-wrap:anywhere}.courseSchematicPreview{width:min(1100px,94vw);max-height:92vh;box-sizing:border-box;overflow:auto;border:1px solid var(--line);border-radius:20px;padding:16px;background:var(--panel);color:var(--text)}.courseSchematicPreview::backdrop{background:#100d20bb;backdrop-filter:blur(6px)}.courseSchematicPreview>div{display:flex;justify-content:space-between;align-items:center;gap:20px}.courseSchematicPreview h3{overflow-wrap:anywhere}.courseSchematicPreview canvas{display:block;width:100%;height:auto;background:white;border-radius:12px}';document.head.appendChild(css);
+    css.textContent+='.courseSchematicEntry{min-width:0;display:flex;flex-direction:column;gap:8px}.courseSchematicEntry .courseSchematicCard{width:100%;flex:1}.courseSchematicRemove{align-self:flex-end;font-size:11px}';
     let generation=0;
     async function refreshGallery(){
       const request=++generation,d=typeof D==='function'?D():null;
       if(!d||!course.classList.contains('on'))return;
-      const models=db.schematics?.[d.id]||[],box=gallery.querySelector('.courseSchematicsGrid');box.replaceChildren();gallery.hidden=!models.length;
+      const models=(db.schematics?.[d.id]||[]).filter(x=>x.inCourse!==false),box=gallery.querySelector('.courseSchematicsGrid');box.replaceChildren();gallery.hidden=!models.length;
       if(!models.length)return;
       try{await load();if(request!==generation||D()?.id!==d.id)return;
         for(const model of models){
           const btn=document.createElement('button');btn.type='button';btn.className='courseSchematicCard';
           const c=document.createElement('canvas');c.width=600;c.height=400;const label=document.createElement('b');label.textContent=model.name||'Schéma';
-          btn.append(c,label);box.appendChild(btn);window.memoDrawSchematic(c,model);
+          const card=document.createElement('div');card.className='courseSchematicEntry';btn.append(c,label);card.appendChild(btn);const remove=document.createElement('button');remove.type='button';remove.className='soft courseSchematicRemove';remove.textContent='Retirer du cours';remove.setAttribute('aria-label','Retirer '+(model.name||'ce schéma')+' du cours');remove.onclick=()=>window.memoRemoveSchematicFromCourse(d.id,model.id);card.appendChild(remove);box.appendChild(card);window.memoDrawSchematic(c,model);
           btn.onclick=()=>{preview.querySelector('h3').textContent=model.name||'Schéma';window.memoDrawSchematic(preview.querySelector('canvas'),model);preview.showModal()};
         }
       }catch{box.textContent='Impossible de charger les schémas. ';const retry=document.createElement('button');retry.textContent='Réessayer';retry.className='soft';retry.onclick=refreshGallery;box.appendChild(retry)}
     }
+    window.addEventListener('memo-schematics-changed',refreshGallery);
     new MutationObserver(refreshGallery).observe(course,{attributes:true,attributeFilter:['class']});
     refreshGallery();
   }
