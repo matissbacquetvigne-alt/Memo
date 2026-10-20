@@ -6,9 +6,24 @@ const controllers=new WeakMap();
 const object=x=>x&&typeof x==='object'&&!Array.isArray(x);
 const copy=x=>JSON.parse(JSON.stringify(x));
 const own=(o,k)=>Object.prototype.hasOwnProperty.call(o,k);
+const CALENDAR_FIELDS={planner:()=>[],routines:()=>[],routineDone:()=>({})};
+function validCalendar(key,value){return key==='routineDone'?object(value):Array.isArray(value)}
+function migrateCalendar(data){
+ if(data.memberCalendarVersion===1||!Array.isArray(data.members)||!data.members.length)return;
+ if(!object(data.memberProgress))data.memberProgress={};
+ const id=data.members.some(m=>m.id==='member-initial')?'member-initial':data.members[0].id;
+ if(!own(data.memberProgress,id)||!object(data.memberProgress[id]))Object.defineProperty(data.memberProgress,id,{value:{},writable:true,configurable:true,enumerable:true});
+ const p=data.memberProgress[id];
+ for(const key of Object.keys(CALENDAR_FIELDS)){
+  if(validCalendar(key,data[key])&&!validCalendar(key,p[key]))p[key]=copy(data[key]);
+ }
+ data.memberCalendarVersion=1;
+}
 function merge(target,other){
  if(target?.memberProgressVersion!==1||other?.memberProgressVersion!==1)return target;
  if(!Array.isArray(target.members)||!Array.isArray(other.members))return target;
+ const incomingHasCalendar=other.memberCalendarVersion===1;
+ migrateCalendar(target);migrateCalendar(other);
  if(!object(target.memberProgress))target.memberProgress={};
  for(const m of other.members){
   if(!object(m)||typeof m.id!=='string'||typeof m.name!=='string')continue;
@@ -16,7 +31,11 @@ function merge(target,other){
   if(!current)target.members.push(copy(m));
   else if(Number(m.updatedAt||0)>Number(current.updatedAt||0))Object.assign(current,copy(m));
   const incoming=other.memberProgress?.[m.id],present=own(target.memberProgress,m.id)?target.memberProgress[m.id]:null;
-  if(object(incoming)&&(!object(present)||Number(incoming.updatedAt||0)>Number(present.updatedAt||0)))Object.defineProperty(target.memberProgress,m.id,{value:copy(incoming),writable:true,configurable:true,enumerable:true});
+  if(object(incoming)&&(!object(present)||Number(incoming.updatedAt||0)>Number(present.updatedAt||0))){
+   const next=copy(incoming);
+   for(const key of Object.keys(CALENDAR_FIELDS))if(validCalendar(key,present?.[key])&&(!incomingHasCalendar||!validCalendar(key,next[key])))next[key]=copy(present[key]);
+   Object.defineProperty(target.memberProgress,m.id,{value:next,writable:true,configurable:true,enumerable:true});
+  }
  }
  return target;
 }
@@ -28,12 +47,14 @@ function bind(data,preferred){
  data.members=data.members.filter(m=>object(m)&&typeof m.id==='string'&&typeof m.name==='string');
  if(!data.members.length)data.members=[{id:'member-initial',name:'Profil initial',createdAt:Date.now()}];
  if(!object(data.memberProgress))data.memberProgress={};
+ migrateCalendar(data);
  let active=data.members.some(m=>m.id===preferred)?preferred:data.members[0].id;
  const boundCards=new WeakSet(),signatures=new Map();
  function record(id=active){
   if(!own(data.memberProgress,id)||!object(data.memberProgress[id]))Object.defineProperty(data.memberProgress,id,{value:{},writable:true,configurable:true,enumerable:true});
   const p=data.memberProgress[id];if(!object(p.cards))p.cards={};
   for(const key of STAT_FIELDS)if(!object(p[key]))p[key]={};
+  for(const [key,empty] of Object.entries(CALENDAR_FIELDS))if(!validCalendar(key,p[key]))p[key]=empty();
   return p;
  }
  function eachCard(fn){for(const subject of data.subjects||[])for(const deck of subject.decks||[])for(const card of deck.cards||[])fn(card,deck)}
@@ -62,6 +83,7 @@ function bind(data,preferred){
   });
  }
  for(const key of STAT_FIELDS){delete data[key];Object.defineProperty(data,key,{configurable:true,enumerable:false,get(){return record()[key]},set(value){record()[key]=object(value)?value:{}}})}
+ for(const [key,empty] of Object.entries(CALENDAR_FIELDS)){delete data[key];Object.defineProperty(data,key,{configurable:true,enumerable:false,get(){return record()[key]},set(value){record()[key]=validCalendar(key,value)?value:empty()}})}
  data.memberProgressVersion=1;refresh();initialScan=false;for(const m of data.members)signatures.set(m.id,signature(record(m.id)));
  const controller={data,get id(){return active},get member(){return data.members.find(m=>m.id===active)},refresh,
   select(id){if(!data.members.some(m=>m.id===id))throw new Error('Membre introuvable.');active=id;refresh();return controller.member},
