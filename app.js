@@ -7,6 +7,17 @@ function memory(c){if(!c.lastRate)return{cls:"new",label:"Non révisée"};if(c.l
 let activeDiscipline=null;
 function disciplineOf(s){return typeof s.discipline==="string"&&s.discipline.trim()?s.discipline.trim():"Psychologie"}
 function disciplineNames(){return [...new Set([...(Array.isArray(db.disciplines)?db.disciplines.filter(x=>typeof x==="string"&&x.trim()).map(x=>x.trim()):[]),...db.subjects.map(disciplineOf)])].sort((a,b)=>a.localeCompare(b,"fr"))}
+function deleteDiscipline(name){
+ const subjects=db.subjects.filter(s=>disciplineOf(s)===name);
+ const message=subjects.length
+  ?'Supprimer la discipline « '+name+' » et ses '+subjects.length+' matière(s) ? Tous leurs chapitres, cartes et cours seront également supprimés.'
+  :'Supprimer la discipline « '+name+' » ?';
+ if(!confirm(message))return;
+ db.disciplines=disciplineNames().filter(n=>n!==name);
+ db.subjects=db.subjects.filter(s=>disciplineOf(s)!==name);
+ if(activeDiscipline===name)activeDiscipline=null;
+ save();home();
+}
 function home(){
  view("home");
  if(!$("disciplineNav")){
@@ -15,17 +26,25 @@ function home(){
  }
  const names=disciplineNames();
  if(activeDiscipline&&!names.includes(activeDiscipline))activeDiscipline=null;
- const q=$("search").value.toLocaleLowerCase("fr").trim(),inDiscipline=activeDiscipline!==null;
+ const inDiscipline=activeDiscipline!==null,q=inDiscipline?$("search").value.toLocaleLowerCase("fr").trim():"";
+ const addButton=$("newSubject");
+ $("home").querySelector(".bar").appendChild(addButton);
  $("disciplineNav").innerHTML=inDiscipline?`<button id="allDisciplines" class="back soft">← Disciplines</button><h2 style="margin:0;font-size:26px">${esc(activeDiscipline)}</h2>`:'<div><h2 style="margin:0;font-size:26px">Mes disciplines</h2><p style="color:var(--muted);margin:6px 0">Choisis un univers pour retrouver tes matières.</p></div>';
  if(inDiscipline)$("allDisciplines").onclick=()=>{activeDiscipline=null;$("search").value="";home()};
  $("home").querySelector(".sectionLabel span").textContent=inDiscipline?"MES MATIÈRES":"MES DISCIPLINES";
  $("search").placeholder=inDiscipline?"Rechercher une matière ou un chapitre…":"Rechercher une discipline…";
- $("newSubject").textContent=inDiscipline?"＋ Nouvelle matière":"＋ Nouvelle discipline";
+ addButton.textContent=inDiscipline?"＋ Nouvelle matière":"+";
+ addButton.title=inDiscipline?"Nouvelle matière":"Nouvelle discipline";
+ addButton.setAttribute("aria-label",addButton.title);
+ addButton.style.cssText=inDiscipline?"":"width:40px;height:40px;min-width:40px;flex:0 0 40px;padding:0;font-size:25px;line-height:1;border-radius:12px;margin-left:auto";
+ $("home").querySelector(".bar").style.display=inDiscipline?"":"none";
+ if(!inDiscipline)$("disciplineNav").appendChild(addButton);
  $("backHome").textContent=inDiscipline?"← "+activeDiscipline:"← Accueil";
  let count=0;
  if(!inDiscipline){
-  const shown=names.filter(n=>n.toLocaleLowerCase("fr").includes(q));count=shown.length;
-  $("subjects").innerHTML=shown.map(n=>{const subjects=db.subjects.filter(s=>disciplineOf(s)===n);return `<button type="button" class="tile disciplineTile" data-discipline="${esc(n)}" style="text-align:left;color:var(--text);font:inherit;min-height:150px;cursor:pointer"><span><span style="font-size:28px;display:block;margin-bottom:14px" aria-hidden="true">${n==="Psychologie"?"🧠":"📚"}</span><strong style="font-size:21px;display:block;margin-bottom:8px">${esc(n)}</strong><span class="meta">${subjects.length} matière(s) · ${subjects.reduce((a,s)=>a+s.decks.length,0)} chapitre(s)</span></span><span aria-hidden="true">→</span></button>`}).join("");
+  const shown=names;count=shown.length;
+  $("subjects").innerHTML=shown.map(n=>{const subjects=db.subjects.filter(s=>disciplineOf(s)===n);return `<div class="tile disciplineTile" style="position:relative;padding:0;overflow:hidden"><button type="button" data-discipline="${esc(n)}" style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex:1;width:100%;text-align:left;color:var(--text);font:inherit;min-height:150px;padding:24px 55px 24px 24px;border:0;background:transparent;box-shadow:none;cursor:pointer"><span><span style="font-size:28px;display:block;margin-bottom:14px" aria-hidden="true">${n==="Psychologie"?"🧠":"📚"}</span><strong style="font-size:21px;display:block;margin-bottom:8px">${esc(n)}</strong><span class="meta">${subjects.length} matière(s) · ${subjects.reduce((a,s)=>a+s.decks.length,0)} chapitre(s)</span></span><span aria-hidden="true">→</span></button><button type="button" class="soft" data-delete-discipline="${esc(n)}" title="Supprimer cette discipline" aria-label="Supprimer la discipline ${esc(n)}" style="position:absolute;top:12px;right:12px;width:32px;height:32px;padding:0;font-size:20px">×</button></div>`}).join("");
+  $("subjects").querySelectorAll("[data-delete-discipline]").forEach(button=>button.onclick=()=>deleteDiscipline(button.dataset.deleteDiscipline));
   $("subjects").querySelectorAll("[data-discipline]").forEach(button=>button.onclick=()=>{activeDiscipline=button.dataset.discipline;$("search").value="";home()});
  }else{
   const a=db.subjects.filter(s=>disciplineOf(s)===activeDiscipline&&(s.name.toLowerCase().includes(q)||s.decks.some(d=>d.name.toLowerCase().includes(q))));count=a.length;
